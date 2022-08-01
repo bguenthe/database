@@ -1,53 +1,171 @@
-select *, date_trunc('day', logtime) from mqtt_logger where topic in ('monthlycosts/costs/new', 'monthlycosts/costs/delete') order by logtime desc;
+select topic,
+       logtime,
+       payload::json ->> 'manmod'         "Model",
+       payload::json ->> 'type'           "type",
+       to_number(payload::json ->> 'costs', '99999.99')          costs,
+       payload::json ->> 'comment'        "comment",
+       payload::json ->> 'recordDateTime' recordDateTime,
+       payload::json ->> 'uniqueID'       uniqueID,
+       payload::json ->> 'deleted'        "deleted",
+       payload::json ->> 'id'             idjson,
+       id
+from mqtt_logger
+where 1 = 1
+and payload::json ->> 'manmod' like 'sam%'
+and topic = 'monthlycosts/clientcosts'
+and payload::json ->> 'deleted' = 'false'
+--and payload like '%komplete%'
+-- and payload::json ->> 'comment' like '%oral%'
+and  upper(payload::json->>'type') = 'KAFFEE'
+--and payload::json->>'uniqueID' = '4eb3afa2-4d0a-464c-878e-fadb0dc5c18c'
+order by to_number(payload::json->>'costs', '9999999.99') desc;
 
-select logtime, id, payload::json->>'id' idjson, payload::json->>'costs' costs, payload::json->>'comment' "comment", payload::json->>'recordDateTime' recordDateTime,
-       payload::json->>'uniquedID' uniqueid, payload::json->>'type' "type", payload::json->>'deleted' "deleted"
+SELECT payload::json ->> 'id'
+from mqtt_logger where topic = 'monthlycosts/clientcosts'
+and payload::json->>'manmod' = 'samsung_SM-G955F'
+order by payload::json ->> id;
+
+select sum(to_number(payload::json->>'costs', '9999999.99')) costs
+from mqtt_logger
+where 1 = 1
+and payload::json ->> 'manmod' like 'sam%'
+and topic = 'monthlycosts/clientcosts'
+and payload::json ->> 'deleted' = 'false'
+--and payload::json ->> 'comment' like '%Dell%'
+and  payload::json->>'type' = 'rest';
+--and payload::json->>'uniqueID' = '4eb3afa2-4d0a-464c-878e-fadb0dc5c18c';
+
+/* Anzahl an Einträgen */
+SELECT count(*) from mqtt_logger where topic = 'monthlycosts/clientcosts'
+and payload::json->>'manmod' = 'samsung_SM-G955F';
+
+SELECT payload::json ->> 'id' id, payload::json ->> 'uniqueID' uniqueid, payload::json ->> 'recordDateTime' recordDateTime, payload::json ->> 'costs' costs, payload::json ->> 'deleted'        "deleted"
+from mqtt_logger where topic = 'monthlycosts/clientcosts'
+and payload::json->>'manmod' = 'samsung_SM-G955F'
+order by payload::json ->> 'recordDateTime';
+
+SELECT payload::json ->> 'id' id, payload::json ->> 'uniqueID' uniqueid, payload::json ->> 'recordDateTime' recordDateTime, payload::json ->> 'income' costs, payload::json ->> 'deleted'        "deleted"
+from mqtt_logger where topic = 'monthlycosts/clientincome'
+                   and payload::json->>'manmod' = 'samsung_SM-G955F'
+order by payload::json ->> 'recordDateTime';
+
+SELECT payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime', count(*)
+from mqtt_logger where topic = 'monthlycosts/clientcosts'
+                   and payload::json->>'manmod' = 'samsung_SM-G955F'
+group by payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime'
+having count(payload::json ->> 'uniqueID') > 1;
+
+SELECT payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime', count(*)
+from mqtt_logger where topic = 'monthlycosts/income'
+                   and payload::json->>'manmod' = 'samsung_SM-G955F'
+group by payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime'
+having count(payload::json ->> 'uniqueID') > 1;
+
+SELECT sum((payload::json ->> 'costs')::DOUBLE PRECISION), payload::json ->> 'type'
+from mqtt_logger where topic = 'monthlycosts/clientcosts'
+and payload::json->>'manmod' = 'samsung_SM-G955F'
+group by payload::json ->> 'type';
+
+SELECT to_number(payload::json ->> 'costs', '99999.99')          costs,
+       payload::json ->> 'comment'        "comment"
+from mqtt_logger where topic = 'monthlycosts/clientcosts'
+                   and payload::json->>'manmod' = 'samsung_SM-G955F'
+and payload::json ->> 'type' = 'sonst'
+order by to_number(payload::json ->> 'costs', '99999.99') desc;
+
+select payload::json ->> 'id', payload::json ->> 'recordDateTime', payload::json ->> 'income'
+    from mqtt_logger where topic = 'monthlycosts/clientincome'
+and payload::json ->> 'manmod' ='samsung_SM-G955F'
+order by payload::json ->> 'recordDateTime' desc ;
+
+select payload::json ->> 'id', payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime', payload::json ->> 'income', payload::json ->> 'deleted', *
+from mqtt_logger where topic = 'monthlycosts/clientincome'
+                   and payload::json ->> 'manmod' ='samsung_SM-G955F'
+order by logtime desc;
+
+delete from mqtt_logger where payload::json ->> 'id' in ('1684', '1682', '1681')
+and topic = 'monthlycosts/clientincome'
+and payload::json ->> 'manmod' ='samsung_SM-G955F';
+
+select sum((payload::json ->> 'income')::DOUBLE PRECISION)
+from mqtt_logger where topic = 'monthlycosts/clientincome'
+                   and payload::json ->> 'manmod' ='samsung_SM-G955F';
+
+with monthlyincome as (
+    select substr(payload::json ->> 'recordDateTime', 1, 7) ym, sum((payload::json ->> 'income')::DOUBLE PRECISION) sum
+    from mqtt_logger where topic = 'monthlycosts/clientincome'
+    and payload::json ->> 'manmod' ='samsung_SM-G955F'
+    and payload::json ->> 'deleted' = 'false'
+    group by substr(payload::json ->> 'recordDateTime', 1, 7)
+), monthlycosts as (
+    select substr(payload::json ->> 'recordDateTime', 1, 7) ym, sum((payload::json ->> 'costs')::DOUBLE PRECISION) sum
+    from mqtt_logger where topic = 'monthlycosts/clientcosts'
+    and payload::json ->> 'manmod' ='samsung_SM-G955F'
+    and payload::json ->> 'deleted' = 'false'
+    group by substr(payload::json ->> 'recordDateTime', 1, 7)
+)
+select monthlycosts.ym, monthlyincome.sum, monthlycosts.sum, (monthlyincome.sum - monthlycosts.sum - 797) from monthlyincome join monthlycosts on monthlyincome.ym = monthlycosts.ym
+order by 1;
+
+with monthlyincome as (
+    select sum((payload::json ->> 'income')::DOUBLE PRECISION) sum
+    from mqtt_logger where topic = 'monthlycosts/clientincome'
+                       and payload::json ->> 'manmod' ='samsung_SM-G955F'
+                       and payload::json ->> 'deleted' = 'false'
+), monthlycosts as (
+    select sum((payload::json ->> 'costs')::DOUBLE PRECISION) sum
+    from mqtt_logger where topic = 'monthlycosts/clientcosts'
+                       and payload::json ->> 'deleted' = 'false'
+                       and payload::json ->> 'manmod' ='samsung_SM-G955F'
+)
+select monthlyincome.sum, monthlycosts.sum, ((monthlyincome.sum - monthlycosts.sum) / 48) - 797 from monthlyincome join monthlycosts on 1=1
+
+-- Income 138160 in 48 Monaten
+-- Costs  081561 in 48 Monaten
+
+/* Monatlicher Durchschnitt */
+with monthcount as (
+    select payload::json ->> 'type', sum(to_number(payload::json->>'costs', '9999999.99')) / count(*)
+    from mqtt_logger
+    where 1=1
+    and payload::json->>'deleted' = 'false'
+    and topic = 'monthlycosts/clientcosts'
+    and payload::json ->> 'manmod' ='samsung_SM-G955F'
+    group by payload::json ->> 'type'
+)
+select sum(to_number(payload::json->>'costs', '9999999.99')) from mqtt_logger
+where 1=1
+  --and payload::json->>'deleted' = 'false'
+  and topic = 'monthlycosts/clientcosts'
+  and payload::json ->> 'manmod' ='samsung_SM-G955F';
+
+select max(to_date(payload::json->>'recordDateTime', 'YYYY-MM-DD')), min(to_date(payload::json->>'recordDateTime', 'YYYY-MM-DD'))
 from mqtt_logger
 where 1=1
-and topic in ('value/costs/new', 'monthlycosts/costs/delete')
-order by id, idjson;
+and payload::json->>'deleted' = 'false'
+and topic = 'monthlycosts/clientcosts'
+and payload::json ->> 'manmod' ='samsung_SM-G955F';
 
-
-select 'database.costsDao().add(Costs("' || cast(payload::json->>'type' as varchar) || '",' || 'LocalDateTime.ofInstant(Instant.ofEpochSecond('
-      || extract('epoch' from cast(payload::json->>'recordDateTime' as date )) || '), ZoneId.systemDefault()), ' || cast(payload::json->>'costs' as varchar) || ',"'
-      || cast(payload::json->>'comment' as varchar) || '"))'
-       , payload::json->>'comment' "comment", payload::json->>'recordDateTime', payload::json->>'recordDateTime' recordDateTime,
-       payload::json->>'uniquedID' uniqueid, payload::json->>'type' "type", payload::json->>'deleted' "deleted"
+/* Einträge per Type */
+select payload::json ->> 'type', count(*)
 from mqtt_logger
 where 1=1
-  and topic in ('monthlycosts/costs/new', 'monthlycosts/costs/delete')
-  --and date_trunc('day', logtime) = '2018-12-03' and id <= 484203;
+  and payload::json->>'deleted' = 'false'
+  and topic = 'monthlycosts/clientcosts'
+  and payload::json ->> 'manmod' ='samsung_SM-G955F'
+group by payload::json ->> 'type';
 
---database.costsDao().add(Costs("test", LocalDateTime.ofInstant(Instant.ofEpochSecond(1), ZoneId.systemDefault()), 10.0, ""))
-
---database.costsDao().add(Costs("lbm",LocalDateTime.ofInstant(Instant.ofEpochSecond(1537056000), ZoneId.systemDefault()), 209.89,""))
-
-select * from mqtt_logger;
-
-select cast(payload::json->>'id' as int), payload::json->>'type', cast(payload::json->>'recordDateTime' as date), payload::json->>'costs'
+select payload::json ->> 'type', sum(to_number(payload::json->>'costs', '9999999.99')) / count(*)
 from mqtt_logger
 where 1=1
-  and topic in ('monthlycosts/costs/new')
-order by id;
+  and payload::json->>'deleted' = 'false'
+  and topic = 'monthlycosts/clientcosts'
+  and payload::json ->> 'manmod' ='samsung_SM-G955F'
+group by payload::json ->> 'type';
 
-select to_char(cast(payload::json->>'recordDateTime' as date), 'YYYY-MM') datum, payload::json->>'type' as type, sum(cast(payload::json->>'costs' as real)) kosten
-from mqtt_logger
+/* Täglicher Durchschnitt */
+select count(*) from mqtt_logger
 where 1=1
-  and topic in ('monthlycosts/costs/new')
-group by datum, type
-order by datum, type;
-
-select * from mqtt_logger
-where 1=1
---and payload::json->>'costs' = '13'
-order by logtime desc
-
-delete from mqtt_logger;
-
-select *
-from mqtt_logger
-where 1=1
-  and topic in ('monthlycosts/costs/new', 'monthlycosts/costs/delete')
-  and payload::json->>'type' = 'sonst'
-  and to_char(cast(payload::json->>'recordDateTime' as date), 'YYYY-MM') = '2018-10';
-
+  --and payload::json->>'deleted' = 'false'
+  and topic = 'monthlycosts/clientcosts'
+  and payload::json ->> 'manmod' ='samsung_SM-G955F';
