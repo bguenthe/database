@@ -13,7 +13,7 @@ commit;
 create unique index costs_uniqueid_uindex
     on costs (uniqueid);
 
-select * from costs where to_char(recorddatetime, 'YYYY') = '2020' and type = 'sonst';
+select * from costs where to_char(recorddatetime, 'YYYY') = '2023' and type = 'sonst';
 
 select * from mqtt_logger;
 
