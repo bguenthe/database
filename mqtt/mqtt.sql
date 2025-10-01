@@ -11,10 +11,10 @@ select topic,
        id
 from mqtt_logger
 where 1 = 1
-and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+--and payload::json ->> 'manmod' = 'samsung_SM-S928B'
 and topic = 'monthlycosts/clientcosts'
 and payload::json ->> 'deleted' = 'false'
-and payload like '%text%'
+--and payload like '%text%'
 -- and payload::json ->> 'comment' like '%oral%'
 --and  upper(payload::json->>'type') = 'SONST'
 --and payload::json ->> 'costs' = '9'
@@ -223,3 +223,7 @@ from mqtt_logger where 1=1
                    and payload::json ->> 'manmod' ='samsung_SM-S928B';
 
 select * from mqtt_logger;
+
+SELECT sum((payload::json ->> 'costs')::double precision)
+FROM public.mqtt_logger
+WHERE payload like '%Kippen%';
