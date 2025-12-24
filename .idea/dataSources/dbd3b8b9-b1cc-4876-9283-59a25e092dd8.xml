@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="mqtt@192.168.178.32">
-  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.32">
+  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.54">
     <root id="1">
       <DateStyle>mdy</DateStyle>
       <Grants>1||-9223372036854775808|c|G
@@ -1423,8 +1423,6 @@ true posixrules
 13111||10|U|G</Grants>
       <IntrospectionStateNumber>59034</IntrospectionStateNumber>
       <ObjectId>16398</ObjectId>
-      <Relations>sequence|table|16593|16587|2
-</Relations>
       <OwnerName>postgres</OwnerName>
     </database>
     <database id="3" parent="1" name="postgres">
@@ -4832,15 +4830,16 @@ true posixrules
     <schema id="268" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>59034</IntrospectionStateNumber>
       <ObjectId>2200</ObjectId>
       <StateNumber>664</StateNumber>
       <OwnerName>postuser</OwnerName>
     </schema>
     <sequence id="269" parent="268" name="mqtt_logger_id_seq">
-      <DataType>bigint|0s</DataType>
       <ObjectId>16593</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>1</StartValue>
       <StateNumber>653</StateNumber>
+      <StoredType>bigint|0s</StoredType>
       <OwnerName>postgres</OwnerName>
     </sequence>
     <table id="270" parent="268" name="mqtt_logger">
@@ -4856,78 +4855,78 @@ true posixrules
       <OwnerName>postgres</OwnerName>
     </table>
     <column id="272" parent="270" name="payload">
-      <DataType>text|0s</DataType>
       <Position>1</Position>
       <StateNumber>651</StateNumber>
+      <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="273" parent="270" name="id">
-      <DataType>integer|0s</DataType>
       <DefaultExpression>nextval(&apos;mqtt_logger_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>656</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>16593</SequenceId>
       <TypeId>23</TypeId>
     </column>
     <column id="274" parent="270" name="topic">
-      <DataType>text|0s</DataType>
       <Position>3</Position>
       <StateNumber>651</StateNumber>
+      <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="275" parent="270" name="logtime">
-      <DataType>timestamp|0s</DataType>
       <Position>4</Position>
       <StateNumber>651</StateNumber>
+      <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
     <index id="276" parent="270" name="id">
-      <ClassIds>1978</ClassIds>
       <ColNames>id</ColNames>
-      <CollationIds>0</CollationIds>
       <ObjectId>16596</ObjectId>
       <Primary>1</Primary>
       <StateNumber>52732</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
+      <ClassIds>1978</ClassIds>
+      <CollationIds>0</CollationIds>
     </index>
     <index id="277" parent="270" name="id_idx">
-      <ClassIds>1978</ClassIds>
       <ColNames>id</ColNames>
-      <CollationIds>0</CollationIds>
       <ObjectId>16598</ObjectId>
       <StateNumber>52732</StateNumber>
       <AccessMethodId>403</AccessMethodId>
+      <ClassIds>1978</ClassIds>
+      <CollationIds>0</CollationIds>
     </index>
     <key id="278" parent="270" name="id">
-      <ColNames>id</ColNames>
       <ObjectId>16597</ObjectId>
       <Primary>1</Primary>
       <StateNumber>659</StateNumber>
       <UnderlyingIndexId>16596</UnderlyingIndexId>
     </key>
     <column id="279" parent="271" name="payload">
-      <DataType>text|0s</DataType>
       <Position>1</Position>
       <StateNumber>52728</StateNumber>
+      <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="280" parent="271" name="id">
-      <DataType>integer|0s</DataType>
       <Position>2</Position>
       <StateNumber>52728</StateNumber>
+      <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
     <column id="281" parent="271" name="topic">
-      <DataType>text|0s</DataType>
       <Position>3</Position>
       <StateNumber>52728</StateNumber>
+      <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="282" parent="271" name="logtime">
-      <DataType>timestamp|0s</DataType>
       <Position>4</Position>
       <StateNumber>52728</StateNumber>
+      <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
   </database-model>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/3afb37a5-ef86-425f-9df6-2cb4098ba87a/console.sql" value="3afb37a5-ef86-425f-9df6-2cb4098ba87a" />
+    <file url="file://$PROJECT_DIR$/mqtt/mqtt.sql" value="6f8fc73a-5990-4f6d-bd24-30cb7ca1bdcb" />
+  </component>
+</project>
