@@ -1,1 +1,0 @@
-DELETE FROM oc_file_locks
