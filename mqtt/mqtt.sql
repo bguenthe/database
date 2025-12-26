@@ -18,6 +18,7 @@ and payload::json ->> 'deleted' = 'false'
 -- and payload::json ->> 'comment' like '%oral%'
 --and  upper(payload::json->>'type') = 'SONST'
 --and payload::json ->> 'costs' = '9'
+and to_date(payload::json->>'recordDateTime', 'YYYY-MM-DD') = to_date ('2025-12-23', 'YYYY-MM-DD')
 order by to_number(payload::json->>'costs', '9999999.99') desc;
 
 SELECT payload::json ->> 'costs', count(*)
@@ -226,4 +227,6 @@ select * from mqtt_logger;
 
 SELECT sum((payload::json ->> 'costs')::double precision)
 FROM public.mqtt_logger
-WHERE payload like '%Kippen%';
+WHERE lower(payload) like '%kippen%';
+
+select count(*) from mqtt_logger;
