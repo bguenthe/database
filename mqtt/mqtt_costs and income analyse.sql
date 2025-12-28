@@ -107,7 +107,7 @@ with regelrente as (select 2804.25 as regelrente),
                  and payload::json ->> 'deleted' = 'false'
                  and topic = 'expanses/clientcosts'
                  and payload::json ->> 'type' != 'allo')
-select leistungsrate,
+select leistungsrate
        fixcosts,
        income / monate                                                   "Monatliche Einnahmen",
        costs / monate                                                    "Kosten pro Monat",
