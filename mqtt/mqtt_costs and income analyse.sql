@@ -81,6 +81,8 @@ from mqtt_logger;
 /* Durchschnittliche, monatliche Ausgaben
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
+--create table assets_and_costs_and_montly_average as (
+insert into assets_and_costs_and_montly_average (
 with regelrente as (select 2804.25 as regelrente),
      vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
      leistungsrate as (select 508 as leistungsrate),
@@ -132,7 +134,8 @@ with regelrente as (select 2804.25 as regelrente),
      monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin as (
     select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 + extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
     )
-select leistungsrate,
+select now(),
+    leistungsrate,
        fixcosts,
        income / monate                                                   "Monatliche Einnahmen",
        costs / monate                                                    "Kosten pro Monat",
@@ -154,8 +157,8 @@ from min_max,
      fixcosts,
      leistungsrate,
      vorgezogene_rente,
-     regelrente, monate_tage_kippen, kippencosts, monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
-
+     regelrente, monate_tage_kippen, kippencosts, monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
+);
 
 /* Stand am 28.12.2025 */
 insert into MY_TABLE (leistungsrate, fixcosts, Monatliche Einnahmen, Kosten pro Monat,
@@ -165,5 +168,3 @@ insert into MY_TABLE (leistungsrate, fixcosts, Monatliche Einnahmen, Kosten pro 
                       Differnz Regelrente zu vorgezogener Rente)
 values (508, 337.36, 3174.9861445783145, 1721.1367108433676, 2058.4967108433675, 2566.4967108433675, 55.955482569525856,
         608.4894337349469, 1116.489433734947, 271.14328915663236, 745.7532891566325, 474.6100000000001);
-
-select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 + extract(MONTH from age('2045-09-01'::DATE, now()::DATE)))
