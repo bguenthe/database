@@ -14,6 +14,7 @@ where 1 = 1
 select payload::json ->> 'manmod',
        payload::json ->> 'id',
        payload::json ->> 'type',
+       payload::json ->> 'comment',
        payload::json ->> 'costs',
        payload::json ->> 'recordDateTime',
        payload::json ->> 'uniqueID',
