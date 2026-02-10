@@ -49,6 +49,9 @@
             <node kind="database" qname="@">
               <node kind="schema" qname="@" />
             </node>
+            <node kind="database" qname="blog">
+              <node kind="schema" negative="1" />
+            </node>
             <node kind="database" qname="mqtt" />
           </node>
         </introspection-scope>
