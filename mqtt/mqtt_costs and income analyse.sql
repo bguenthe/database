@@ -117,12 +117,12 @@ with regelrente as (select 2804.25 as regelrente),
                             größtes_datum - kleinstes_datum                         tage
                      from min_max),
      costs_ohne_allo as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs_ohne_allo
-               from mqtt_logger
-               where 1 = 1
-                 and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-                 and payload::json ->> 'deleted' = 'false'
-                 and topic = 'expanses/clientcosts'
-                 and payload::json ->> 'type' != 'allo'),
+                         from mqtt_logger
+                         where 1 = 1
+                           and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+                           and payload::json ->> 'deleted' = 'false'
+                           and topic = 'expanses/clientcosts'
+                           and payload::json ->> 'type' != 'allo'),
      min_max_kippen as
          (select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
                  max(payload::json ->> 'recordDateTime')::date größtest_datum
@@ -151,17 +151,19 @@ select now(),
        fixcosts,
        income / monate                                                   "Monatliche Einnahmen",
        income_last_year / 12                                             "Monatliche Einnahmen der letzen 12 Monate",
-       costs_ohne_allo / monate                                                    "Kosten pro Monat",
-       (costs_ohne_allo / monate) + fixcosts                                       "Kosten pro Monat (inkl. Fixkosten)",
-       (costs_ohne_allo / monate) + fixcosts + leistungsrate                       "Kosten pro Monat (inkl. Fixkosten und Leistungsrate)",
-       costs_ohne_allo / tage                                                      "Kosten pro Tag",
-       (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts + leistungsrate) "Monatliches Geld über (Fixkosten und Leistungsrate",
-       (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts)                 "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
-       (vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts)               "Monatliches Geld über mit vorgezogener Rente",
-       (regelrente) - ((costs_ohne_allo / monate) + fixcosts)                      "Monatliches Geld über mit regulärer Rente",
-       ((regelrente) - ((costs_ohne_allo / monate) + fixcosts)) -
-       ((vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts))             "Differnz Regelrente zu vorgezogener Rente",
+       costs_ohne_allo / monate                                          "Kosten pro Monat",
+       (costs_ohne_allo / monate) + fixcosts                             "Kosten pro Monat (inkl. Fixkosten)",
+       (costs_ohne_allo / monate) + fixcosts + leistungsrate             "Kosten pro Monat (inkl. Fixkosten und Leistungsrate)",
        kippencosts / monate_tage_kippen.monate_kippen                    "Monatliche Kosten für Kippen",
+       (income_last_year / 12) -
+       ((costs_ohne_allo / monate) + fixcosts + leistungsrate)           "Monatliches Geld über (Fixkosten und Leistungsrate",
+       (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts) "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
+       (vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts)     "Monatliches Geld über mit vorgezogener Rente",
+       (regelrente) - ((costs_ohne_allo / monate) + fixcosts)            "Monatliches Geld über mit regulärer Rente",
+       (regelrente) - ((costs_ohne_allo / monate) + fixcosts) +
+       (kippencosts / monate_tage_kippen.monate_kippen) "Monatliches Geld über mit regulärer Rente (und Nichtraucher)",
+       ((regelrente) - ((costs_ohne_allo / monate) + fixcosts)) -
+       ((vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts))   "Differnz Regelrente zu vorgezogener Rente",
        monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
 from min_max,
      costs_ohne_allo,
