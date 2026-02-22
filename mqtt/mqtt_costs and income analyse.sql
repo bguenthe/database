@@ -85,6 +85,7 @@ from mqtt_logger;
 --create table assets_and_costs_and_montly_average as (
 insert into assets_and_costs_and_montly_average (;
 
+--insert into assets_and_costs_and_montly_average (
 with regelrente as (select 2804.25 as regelrente),
      vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
      leistungsrate as (select 508 as leistungsrate),
@@ -154,14 +155,14 @@ select now(),
        costs_ohne_allo / monate                                          "Kosten pro Monat",
        (costs_ohne_allo / monate) + fixcosts                             "Kosten pro Monat (inkl. Fixkosten)",
        (costs_ohne_allo / monate) + fixcosts + leistungsrate             "Kosten pro Monat (inkl. Fixkosten und Leistungsrate)",
-       kippencosts / monate_tage_kippen.monate_kippen                    "Monatliche Kosten für Kippen",
+       kippencosts / monate_tage_kippen.tage_kippen * 30                    "Monatliche Kosten für Kippen",
        (income_last_year / 12) -
        ((costs_ohne_allo / monate) + fixcosts + leistungsrate)           "Monatliches Geld über (Fixkosten und Leistungsrate",
        (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts) "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
        (vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts)     "Monatliches Geld über mit vorgezogener Rente",
        (regelrente) - ((costs_ohne_allo / monate) + fixcosts)            "Monatliches Geld über mit regulärer Rente",
        (regelrente) - ((costs_ohne_allo / monate) + fixcosts) +
-       (kippencosts / monate_tage_kippen.monate_kippen) "Monatliches Geld über mit regulärer Rente (und Nichtraucher)",
+       (kippencosts / monate_tage_kippen.tage_kippen * 30) "Monatliches Geld über mit regulärer Rente (und Nichtraucher)",
        ((regelrente) - ((costs_ohne_allo / monate) + fixcosts)) -
        ((vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts))   "Differnz Regelrente zu vorgezogener Rente",
        monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
@@ -177,14 +178,6 @@ from min_max,
      monate_tage_kippen,
      kippencosts,
      monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
-
-select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income
-from mqtt_logger
-where 1 = 1
-  and topic = 'expanses/clientincome'
-  and payload::json ->> 'deleted' = 'false'
-  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-  and payload::json ->> 'recordDateTime'::date >= now()
 
 select (payload::json ->> 'recordDateTime')::date
 from mqtt_logger
