@@ -83,16 +83,27 @@ from mqtt_logger;
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
 --create table assets_and_costs_and_montly_average as (
-insert into assets_and_costs_and_montly_average (
+insert into assets_and_costs_and_montly_average (;
+
 with regelrente as (select 2804.25 as regelrente),
      vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
      leistungsrate as (select 508 as leistungsrate),
-     fixcosts as (select 337.36 as fixcosts),
+     fixcosts as (select 343.31 as fixcosts),
      income as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income
                 from mqtt_logger
                 where 1 = 1
                   and topic = 'expanses/clientincome'
+                  and payload::json ->> 'deleted' = 'false'
                   and payload::json ->> 'manmod' = 'samsung_SM-S928B'),
+     income_last_year as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income_last_year
+                          from mqtt_logger
+                          where 1 = 1
+                            and topic = 'expanses/clientincome'
+                            and payload::json ->> 'deleted' = 'false'
+                            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+                            and (payload::json ->> 'recordDateTime')::date >=
+                                date_trunc('year', CURRENT_DATE) - INTERVAL '1 year'
+                            and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE)),
      min_max as
          (select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
                  max(payload::json ->> 'recordDateTime')::date größtes_datum
@@ -105,7 +116,7 @@ with regelrente as (select 2804.25 as regelrente),
                             extract(MONTH from age(größtes_datum, kleinstes_datum)) monate,
                             größtes_datum - kleinstes_datum                         tage
                      from min_max),
-     costs as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs
+     costs_ohne_allo as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs_ohne_allo
                from mqtt_logger
                where 1 = 1
                  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
@@ -132,69 +143,54 @@ with regelrente as (select 2804.25 as regelrente),
                        and payload::json ->> 'deleted' = 'false'
                        and topic = 'expanses/clientcosts'
                        and lower(payload::json ->> 'comment') like '%kippen%'),
-     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin as (
-    select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 + extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
-    )
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
+         as (select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
+                              extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin)
 select now(),
-    leistungsrate,
+       leistungsrate,
        fixcosts,
        income / monate                                                   "Monatliche Einnahmen",
-       costs / monate                                                    "Kosten pro Monat",
-       (costs / monate) + fixcosts                                       "Kosten pro Monat (inkl. Fixkosten)",
-       (costs / monate) + fixcosts + leistungsrate                       "Kosten pro Monat (inkl. Fixkosten) und Leistungsrate",
-       costs / tage                                                      "Kosten pro Tag",
-       (income / monate) - ((costs / monate) + fixcosts + leistungsrate) "Monatliches Geld über",
-       (income / monate) - ((costs / monate) + fixcosts)                 "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
-       (vorgezogene_rente) - ((costs / monate) + fixcosts)               "Monatliches Geld über mit vorgezogener Rente",
-       (regelrente) - ((costs / monate) + fixcosts)                      "Monatliches Geld über mit regulärer Rente",
-       ((regelrente) - ((costs / monate) + fixcosts)) -
-       ((vorgezogene_rente) - ((costs / monate) + fixcosts))             "Differnz Regelrente zu vorgezogener Rente",
-        kippencosts / monate_tage_kippen.monate_kippen "Monatliche Kosten für Kippen",
+       income_last_year / 12                                             "Monatliche Einnahmen der letzen 12 Monate",
+       costs_ohne_allo / monate                                                    "Kosten pro Monat",
+       (costs_ohne_allo / monate) + fixcosts                                       "Kosten pro Monat (inkl. Fixkosten)",
+       (costs_ohne_allo / monate) + fixcosts + leistungsrate                       "Kosten pro Monat (inkl. Fixkosten und Leistungsrate)",
+       costs_ohne_allo / tage                                                      "Kosten pro Tag",
+       (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts + leistungsrate) "Monatliches Geld über (Fixkosten und Leistungsrate",
+       (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts)                 "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
+       (vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts)               "Monatliches Geld über mit vorgezogener Rente",
+       (regelrente) - ((costs_ohne_allo / monate) + fixcosts)                      "Monatliches Geld über mit regulärer Rente",
+       ((regelrente) - ((costs_ohne_allo / monate) + fixcosts)) -
+       ((vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts))             "Differnz Regelrente zu vorgezogener Rente",
+       kippencosts / monate_tage_kippen.monate_kippen                    "Monatliche Kosten für Kippen",
        monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
 from min_max,
-     costs,
+     costs_ohne_allo,
      monate_tage,
      income,
+     income_last_year,
      fixcosts,
      leistungsrate,
      vorgezogene_rente,
-     regelrente, monate_tage_kippen, kippencosts, monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
+     regelrente,
+     monate_tage_kippen,
+     kippencosts,
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
 
-/* Stand am 28.12.2025 */
-insert into MY_TABLE (leistungsrate, fixcosts, Monatliche Einnahmen, Kosten pro Monat,
-                      Kosten pro Monat (inkl. Fixkosten), Kosten pro Monat (inkl. Fixkosten) und Leistungsrate,
-                      Kosten pro Tag, Monatliches Geld über, Monatliches Geld über mit 65 Jahren (ohne Leistungsrate),
-                      Monatliches Geld über mit vorgezogener Rente, Monatliches Geld über mit regulärer Rente,
-                      Differnz Regelrente zu vorgezogener Rente)
-values (508, 337.36, 3174.9861445783145, 1721.1367108433676, 2058.4967108433675, 2566.4967108433675, 55.955482569525856,
-        608.4894337349469, 1116.489433734947, 271.14328915663236, 745.7532891566325, 474.6100000000001);
+select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientincome'
+  and payload::json ->> 'deleted' = 'false'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+  and payload::json ->> 'recordDateTime'::date >= now()
 
-select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
-        max(payload::json ->> 'recordDateTime')::date größtes_datum
- from mqtt_logger
- where 1 = 1
-   and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-   and payload::json ->> 'deleted' = 'false'
-   and topic like '%clientcosts%'
-
-with min_max_kippen as
-         (select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
-                 max(payload::json ->> 'recordDateTime')::date größtest_datum
-          from mqtt_logger
-          where 1 = 1
-            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-            and payload::json ->> 'deleted' = 'false'
-            and topic like '%clientcosts%'
-            and lower(payload::json ->> 'comment') like '%kippen%'),
-     monate_tage_kippen as (select extract(YEAR from age(größtest_datum, kleinstes_datum)) * 12 +
-                                   extract(MONTH from age(größtest_datum, kleinstes_datum)) monate_kippen,
-                                   größtest_datum - kleinstes_datum                         tage_kippen
-                            from min_max_kippen),
-     kippencosts as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) kippencosts
-                     from mqtt_logger
-                     where 1 = 1
-                       and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-                       and payload::json ->> 'deleted' = 'false'
-                       and topic = 'expanses/clientcosts'
-                       and lower(payload::json ->> 'comment') like '%kippen%')
-     select * from min_max_kippen, monate_tage_kippen, kippencosts;
+select (payload::json ->> 'recordDateTime')::date
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientincome'
+  and payload::json ->> 'deleted' = 'false'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+--  and (payload::json ->> 'recordDateTime')::date >= '2025-01-01'
+--  and (payload::json ->> 'recordDateTime')::date <= '2025-12-31'
+  and (payload::json ->> 'recordDateTime')::date >= date_trunc('year', CURRENT_DATE) - INTERVAL '1 year'
+  and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE);

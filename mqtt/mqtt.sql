@@ -12,14 +12,18 @@ select topic,
 from mqtt_logger
 where 1 = 1
 --and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-  and topic = 'monthlycosts/clientcosts'
+  and topic = 'expanses/clientcosts'
   and payload::json ->> 'deleted' = 'false'
 --and payload like '%text%'
 -- and payload::json ->> 'comment' like '%oral%'
 --and  upper(payload::json->>'type') = 'SONST'
 --and payload::json ->> 'costs' = '9'
-  and to_date(payload::json ->> 'recordDateTime', 'YYYY-MM-DD') = to_date('2025-12-23', 'YYYY-MM-DD')
-order by to_number(payload::json ->> 'costs', '9999999.99') desc;
+order by recordDateTime desc
+--and to_date(payload::json ->> 'recordDateTime', 'YYYY-MM-DD') = to_date('2025-12-23', 'YYYY-MM-DD')
+--order by to_number(payload::json ->> 'costs', '9999999.99') desc
+;
+
+
 
 SELECT payload::json ->> 'costs', count(*)
 from mqtt_logger
@@ -60,14 +64,21 @@ where topic = 'monthlycosts/clientcosts'
 order by payload::json ->> 'recordDateTime';
 
 SELECT payload::json ->> 'id'             id,
-       payload::json ->> 'uniqueID'       uniqueid,
+       topic,
        payload::json ->> 'recordDateTime' recordDateTime,
-       payload::json ->> 'income'         costs,
+       payload::json ->> 'income'         income,
        payload::json ->> 'deleted'        "deleted"
 from mqtt_logger
-where topic = 'monthlycosts/clientincome'
-  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
-order by payload::json ->> 'recordDateTime';
+where topic = 'expanses/clientincome'
+order by payload::json ->> 'recordDateTime' desc;
+
+delete from mqtt_logger
+where topic = 'expanses/clientincome'
+and payload::json ->> 'id' = '751'; -- and payload::json ->> 'deleted' = 'false';
+
+select * from mqtt_logger where
+    payload::json ->> 'id' = '1225'
+
 
 SELECT payload::json ->> 'uniqueID', payload::json ->> 'recordDateTime', count(*)
 from mqtt_logger
