@@ -83,7 +83,7 @@ from mqtt_logger;
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
 --create table assets_and_costs_and_montly_average as (
-insert into assets_and_costs_and_montly_average (;
+--insert into assets_and_costs_and_montly_average (;
 
 --insert into assets_and_costs_and_montly_average (
 with regelrente as (select 2804.25 as regelrente),
