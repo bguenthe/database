@@ -85,7 +85,7 @@ from mqtt_logger;
 --create table assets_and_costs_and_montly_average as (
 --insert into assets_and_costs_and_montly_average (;
 
---insert into assets_and_costs_and_montly_average (
+insert into assets_and_costs_and_montly_average_new_version (
 with regelrente as (select 2804.25 as regelrente),
      vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
      leistungsrate as (select 508 as leistungsrate),
@@ -177,7 +177,7 @@ from min_max,
      regelrente,
      monate_tage_kippen,
      kippencosts,
-     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin);
 
 select (payload::json ->> 'recordDateTime')::date
 from mqtt_logger
