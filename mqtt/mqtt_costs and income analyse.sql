@@ -75,17 +75,11 @@ update mqtt_logger
 set topic = replace(topic, 'monthlycosts/clientcosts', 'expanses/clientcosts')
 where topic = 'monthlycosts/clientcosts';
 
-create table mqtt_logger_expanses_with_allo_28_12_2025 as
-select *
-from mqtt_logger;
-
 /* Durchschnittliche, monatliche Ausgaben
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
---create table assets_and_costs_and_montly_average as (
-insert into assets_and_costs_and_montly_average (;
-
---insert into assets_and_costs_and_montly_average (
+--insert into assets_and_costs_and_montly_average_new_version (
+--create table assets_and_costs_and_montly_average_new_version as (
 with regelrente as (select 2804.25 as regelrente),
      vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
      leistungsrate as (select 508 as leistungsrate),
@@ -177,7 +171,7 @@ from min_max,
      regelrente,
      monate_tage_kippen,
      kippencosts,
-     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
 
 select (payload::json ->> 'recordDateTime')::date
 from mqtt_logger
@@ -188,4 +182,4 @@ where 1 = 1
 --  and (payload::json ->> 'recordDateTime')::date >= '2025-01-01'
 --  and (payload::json ->> 'recordDateTime')::date <= '2025-12-31'
   and (payload::json ->> 'recordDateTime')::date >= date_trunc('year', CURRENT_DATE) - INTERVAL '1 year'
-  and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE);
+  and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE))
