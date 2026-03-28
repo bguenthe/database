@@ -24,7 +24,6 @@ order by recordDateTime desc
 ;
 
 /* Kippen */
-
 select topic,
        logtime,
        payload::json ->> 'manmod'                       "Model",
