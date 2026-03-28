@@ -20,7 +20,9 @@ with min_max as
                      )
 select costs_per_cat.type, monate, costs, costs / monate from monate_tage, costs_per_cat;
 
-select payload::json ->> 'comment', (payload::json ->> 'costs')::DOUBLE PRECISION from mqtt_logger
+select payload::json ->> 'comment' "Comment",
+       (payload::json ->> 'costs')::DOUBLE PRECISION "Costs"
+from mqtt_logger
 where 1 = 1
   and payload::json ->> 'manmod' = 'samsung_SM-S928B'
   and payload::json ->> 'deleted' = 'false'

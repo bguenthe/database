@@ -78,21 +78,20 @@ where topic = 'monthlycosts/clientcosts';
 /* Durchschnittliche, monatliche Ausgaben
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
---create table assets_and_costs_and_montly_average as (
-insert into assets_and_costs_and_montly_average (;
+--create table assets_and_costs_and_montly_average_atz as (
+insert into assets_and_costs_and_montly_average_atz (;
 
 --insert into assets_and_costs_and_montly_average (
-with regelrente as (select 2804.25 as regelrente),
-     vorgezogene_rente as (select 2329.64 as vorgezogene_rente),
+with atz_rente as (select 2701.84 as atz_rente), -- ATZ Rente aus heydorn und den Zahlen von HR (ohne Berücksichtigung der Abmilderungszahlung
      leistungsrate as (select 508 as leistungsrate),
-     fixcosts as (select 343.31 as fixcosts),
+     fixcosts as (select 346.29 as fixcosts),
      income as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income
                 from mqtt_logger
                 where 1 = 1
                   and topic = 'expanses/clientincome'
                   and payload::json ->> 'deleted' = 'false'
                   and payload::json ->> 'manmod' = 'samsung_SM-S928B'),
-     income_last_year as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income_last_year
+     income_last_year as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income_last_year -- Besser Werter, da es ja gestiegen ist
                           from mqtt_logger
                           where 1 = 1
                             and topic = 'expanses/clientincome'
@@ -113,7 +112,7 @@ with regelrente as (select 2804.25 as regelrente),
                             extract(MONTH from age(größtes_datum, kleinstes_datum)) monate,
                             größtes_datum - kleinstes_datum                         tage
                      from min_max),
-     costs_ohne_allo as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs_ohne_allo
+     costs_ohne_allo as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs_ohne_allo -- da ich ja ewig nicht mehr trinke
                          from mqtt_logger
                          where 1 = 1
                            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
@@ -146,21 +145,19 @@ with regelrente as (select 2804.25 as regelrente),
 select now(),
        leistungsrate,
        fixcosts,
-       income / monate                                                   "Monatliche Einnahmen",
+       income / monate                                                   "Monatliche Einnahmen (über gesamte Laufzeit der app)",
        income_last_year / 12                                             "Monatliche Einnahmen der letzen 12 Monate",
        costs_ohne_allo / monate                                          "Kosten pro Monat",
        (costs_ohne_allo / monate) + fixcosts                             "Kosten pro Monat (inkl. Fixkosten)",
        (costs_ohne_allo / monate) + fixcosts + leistungsrate             "Kosten pro Monat (inkl. Fixkosten und Leistungsrate)",
-       kippencosts / monate_tage_kippen.tage_kippen * 30                    "Monatliche Kosten für Kippen",
+       kippencosts / monate_tage_kippen.tage_kippen * 30                 "Monatliche Kosten für Kippen",
        (income_last_year / 12) -
-       ((costs_ohne_allo / monate) + fixcosts + leistungsrate)           "Monatliches Geld über (Fixkosten und Leistungsrate",
+       ((costs_ohne_allo / monate) + fixcosts + leistungsrate)           "Monatliches Geld über (Fixkosten und Leistungsrate)",
        (income_last_year / 12) - ((costs_ohne_allo / monate) + fixcosts) "Monatliches Geld über mit 65 Jahren (ohne Leistungsrate)",
-       (vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts)     "Monatliches Geld über mit vorgezogener Rente",
-       (regelrente) - ((costs_ohne_allo / monate) + fixcosts)            "Monatliches Geld über mit regulärer Rente",
-       (regelrente) - ((costs_ohne_allo / monate) + fixcosts) +
+       (atz_rente) - ((costs_ohne_allo / monate) + fixcosts)            "Monatliches Geld über mit regulärer Rente",
+       (atz_rente) - ((costs_ohne_allo / monate) + fixcosts) +
        (kippencosts / monate_tage_kippen.tage_kippen * 30) "Monatliches Geld über mit regulärer Rente (und Nichtraucher)",
-       ((regelrente) - ((costs_ohne_allo / monate) + fixcosts)) -
-       ((vorgezogene_rente) - ((costs_ohne_allo / monate) + fixcosts))   "Differnz Regelrente zu vorgezogener Rente",
+       ((atz_rente) - ((costs_ohne_allo / monate) + fixcosts)) -
        monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
 from min_max,
      costs_ohne_allo,
@@ -169,8 +166,7 @@ from min_max,
      income_last_year,
      fixcosts,
      leistungsrate,
-     vorgezogene_rente,
-     regelrente,
+     atz_rente,
      monate_tage_kippen,
      kippencosts,
      monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
