@@ -1,16 +1,79 @@
 /* Anzahl an Einträgen */
 select count(*)
-from costs_view;
+from mqtt_logger_expanses_with_allo_28_12_2025
+where 1 = 1
+  and topic = 'expanses/clientcosts'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B';
 
 select count(*)
-from income_view;
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientincome'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B';
+
+select payload::json ->> 'manmod',
+       payload::json ->> 'id',
+       payload::json ->> 'type',
+       payload::json ->> 'comment',
+       payload::json ->> 'costs',
+       payload::json ->> 'recordDateTime',
+       payload::json ->> 'uniqueID',
+       payload::json ->> 'deleted',
+       payload
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientcosts'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+--and payload::json ->> 'type' = 'allo';
+order by payload::json ->> 'recordDateTime' desc;
+
+select payload::json ->> 'manmod',
+       payload::json ->> 'id',
+       payload::json ->> 'income',
+       payload::json ->> 'recordDateTime',
+       payload::json ->> 'uniqueID',
+       payload::json ->> 'deleted',
+       payload,
+       *
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientincome'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+order by payload::json ->> 'id';
 
 /* sonstige Kosten absteigend nach preis */
-select *
-from costs_view
+select payload::json ->> 'manmod',
+       payload::json ->> 'id',
+       payload::json ->> 'type',
+       payload::json ->> 'comment',
+       payload::json ->> 'costs',
+       payload::json ->> 'recordDateTime',
+       payload::json ->> 'uniqueID',
+       payload::json ->> 'deleted',
+       payload
+from mqtt_logger
 where 1 = 1
-  and type = 'sonst'
-order by to_number(costs, '9999999.99') desc;
+  and topic = 'expanses/clientcosts'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+  and payload::json ->> 'type' = 'sonst'
+  and payload::json ->> 'deleted' = 'false'
+order by to_number(payload::json ->> 'costs', '9999999.99') desc;
+
+select sum(to_number(payload::json ->> 'costs', '9999999.99'))
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientcosts'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+  and payload::json ->> 'deleted' = 'false'
+  and payload::json ->> 'type' = 'sonst';
+
+update mqtt_logger
+set topic = replace(topic, 'monthlycosts/clientincome', 'expanses/clientincome')
+where topic = 'monthlycosts/clientincome';
+
+update mqtt_logger
+set topic = replace(topic, 'monthlycosts/clientcosts', 'expanses/clientcosts')
+where topic = 'monthlycosts/clientcosts';
 
 /* Durchschnittliche, monatliche Ausgaben
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
@@ -19,45 +82,66 @@ order by to_number(costs, '9999999.99') desc;
 insert into assets_and_costs_and_montly_average_atz (;
 
 --insert into assets_and_costs_and_montly_average (
-with
-    atz_rente as (select 2701.84 as atz_rente), -- ATZ Rente aus heydorn und den Zahlen von HR (ohne Berücksichtigung der Abmilderungszahlung
+with atz_rente as (select 2701.84 as atz_rente), -- ATZ Rente aus heydorn und den Zahlen von HR (ohne Berücksichtigung der Abmilderungszahlung
      leistungsrate as (select 508 as leistungsrate),
-     fixcosts as (select sum(monthly_costs) as fixcosts from fixcosts_view),
-     income as (select sum(income_view.income) as income
-                from income_view),
-     income_last_year as (select sum(income) as income_last_year -- Besser Werter, da es ja gestiegen ist
-                          from income_view
+     fixcosts as (select 346.29 as fixcosts),
+     income as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income
+                from mqtt_logger
+                where 1 = 1
+                  and topic = 'expanses/clientincome'
+                  and payload::json ->> 'deleted' = 'false'
+                  and payload::json ->> 'manmod' = 'samsung_SM-S928B'),
+     income_last_year as (select (sum((payload::json ->> 'income')::DOUBLE PRECISION)) income_last_year -- Besser Werter, da es ja gestiegen ist
+                          from mqtt_logger
                           where 1 = 1
-                            and recordDateTime::date >=
+                            and topic = 'expanses/clientincome'
+                            and payload::json ->> 'deleted' = 'false'
+                            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+                            and (payload::json ->> 'recordDateTime')::date >=
                                 date_trunc('year', CURRENT_DATE) - INTERVAL '1 year'
-                            and recordDateTime::date < date_trunc('year', CURRENT_DATE)),
+                            and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE)),
      min_max as
-         (select min(recordDateTime::date) kleinstes_datum,
-                 max(recordDateTime::date) größtes_datum
-          from costs_view),
+         (select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
+                 max(payload::json ->> 'recordDateTime')::date größtes_datum
+          from mqtt_logger
+          where 1 = 1
+            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+            and payload::json ->> 'deleted' = 'false'
+            and topic like '%clientcosts%'),
      monate_tage as (select extract(YEAR from age(größtes_datum, kleinstes_datum)) * 12 +
                             extract(MONTH from age(größtes_datum, kleinstes_datum)) monate,
                             größtes_datum - kleinstes_datum                         tage
                      from min_max),
-     costs_ohne_allo as (select sum(costs) costs_ohne_allo -- da ich ja ewig nicht mehr trinke
-                         from costs_view
-                         where type != 'allo'),
+     costs_ohne_allo as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) costs_ohne_allo -- da ich ja ewig nicht mehr trinke
+                         from mqtt_logger
+                         where 1 = 1
+                           and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+                           and payload::json ->> 'deleted' = 'false'
+                           and topic = 'expanses/clientcosts'
+                           and payload::json ->> 'type' != 'allo'),
      min_max_kippen as
-         (select min(recordDateTime)::date kleinstes_datum,
-                 max(recordDateTime)::date größtest_datum
-          from costs_view
+         (select min(payload::json ->> 'recordDateTime')::date kleinstes_datum,
+                 max(payload::json ->> 'recordDateTime')::date größtest_datum
+          from mqtt_logger
           where 1 = 1
-            and lower(comment) like '%kippen%'),
+            and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+            and payload::json ->> 'deleted' = 'false'
+            and topic like '%clientcosts%'
+            and lower(payload::json ->> 'comment') like '%kippen%'),
      monate_tage_kippen as (select extract(YEAR from age(größtest_datum, kleinstes_datum)) * 12 +
                                    extract(MONTH from age(größtest_datum, kleinstes_datum)) monate_kippen,
                                    größtest_datum - kleinstes_datum                         tage_kippen
                             from min_max_kippen),
-     kippencosts as (select sum(costs) kippencosts
-                     from costs_view
-                       where lower(comment) like '%kippen%'),
-     monatliches_extrageld_bis_ich_85_bin
+     kippencosts as (select (sum((payload::json ->> 'costs')::DOUBLE PRECISION)) kippencosts
+                     from mqtt_logger
+                     where 1 = 1
+                       and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+                       and payload::json ->> 'deleted' = 'false'
+                       and topic = 'expanses/clientcosts'
+                       and lower(payload::json ->> 'comment') like '%kippen%'),
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
          as (select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
-                              extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_extrageld_bis_ich_85_bin)
+                              extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin)
 select now(),
        leistungsrate,
        fixcosts,
@@ -73,7 +157,8 @@ select now(),
        (atz_rente) - ((costs_ohne_allo / monate) + fixcosts)            "Monatliches Geld über mit regulärer Rente",
        (atz_rente) - ((costs_ohne_allo / monate) + fixcosts) +
        (kippencosts / monate_tage_kippen.tage_kippen * 30) "Monatliches Geld über mit regulärer Rente (und Nichtraucher)",
-       monatliches_extrageld_bis_ich_85_bin as monatliches_extrageld_bis_ich_85_bin
+       ((atz_rente) - ((costs_ohne_allo / monate) + fixcosts)) -
+       monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin
 from min_max,
      costs_ohne_allo,
      monate_tage,
@@ -84,4 +169,15 @@ from min_max,
      atz_rente,
      monate_tage_kippen,
      kippencosts,
-     monatliches_extrageld_bis_ich_85_bin;
+     monatliches_geld_durch_aktuelles_vermögen_bis_ich_85_bin;
+
+select (payload::json ->> 'recordDateTime')::date
+from mqtt_logger
+where 1 = 1
+  and topic = 'expanses/clientincome'
+  and payload::json ->> 'deleted' = 'false'
+  and payload::json ->> 'manmod' = 'samsung_SM-S928B'
+--  and (payload::json ->> 'recordDateTime')::date >= '2025-01-01'
+--  and (payload::json ->> 'recordDateTime')::date <= '2025-12-31'
+  and (payload::json ->> 'recordDateTime')::date >= date_trunc('year', CURRENT_DATE) - INTERVAL '1 year'
+  and (payload::json ->> 'recordDateTime')::date < date_trunc('year', CURRENT_DATE);
