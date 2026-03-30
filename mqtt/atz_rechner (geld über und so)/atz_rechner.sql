@@ -1,10 +1,8 @@
 /* Durchschnittliche, monatliche Ausgaben
    SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
    */
---create table assets_and_costs_and_montly_average_atz as (
-insert into assets_and_costs_and_montly_average_atz (;
-
---insert into assets_and_costs_and_montly_average (
+create table assets_and_costs_and_montly_average_atz as (;
+insert into assets_and_costs_and_montly_average_atz
 with atz_rente
          as (select 2701.84 as atz_rente),       -- ATZ Rente aus heydorn und den Zahlen von HR (ohne Berücksichtigung der Abmilderungszahlung)
      atz_netto as (select 3084.37 as atz_netto), -- ATZ netto aus Simulation und Abzug der Enggeldumwandlung
@@ -43,7 +41,7 @@ with atz_rente
                      from costs_view
                      where lower(comment) like '%kippen%'),
      monatliches_extrageld_bis_ich_85_bin
-         as (select 200000 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
+         as (select 203523.24 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
                               extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_extrageld_bis_ich_85_bin)
 select now(),
        monate,
