@@ -21,6 +21,14 @@ where 1 = 1
 order by recordDateTime desc
 --and to_date(payload::json ->> 'recordDateTime', 'YYYY-MM-DD') = to_date('2025-12-23', 'YYYY-MM-DD')
 --order by to_number(payload::json ->> 'costs', '9999999.99') desc
+
+delete from mqtt_logger where payload like '%6861525e-5d1a-4507-a3a7-8be878271207%';
+
+select sum(costs) from costs_view;
+
+select count(*)
+from mqtt_logger
+where topic = 'expanses/clientincome'
 ;
 
 /* Kippen */
