@@ -5,7 +5,7 @@ create table assets_and_costs_and_montly_average_atz as (;
 insert into assets_and_costs_and_montly_average_atz
 with atz_rente
          as (select 2701.84 as atz_rente),       -- ATZ Rente aus heydorn und den Zahlen von HR (ohne Berücksichtigung der Abmilderungszahlung)
-     atz_netto as (select 3084.37 as atz_netto), -- ATZ netto aus Simulation und Abzug der Enggeldumwandlung
+     atz_netto as (select 3098.00 as atz_netto), -- ATZ netto aus Vertrag
      leistungsrate as (select 508 as leistungsrate),
      fixcosts as (select sum(monthly_costs) as fixcosts from fixcosts_view),
      income as (select sum(income_view.income) as income
