@@ -66,3 +66,13 @@ values ('Wohngebäude', 357.01,null);
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('WWF', 50.00,null);
+
+insert into fixcosts (type, yearly_costs, comment)
+values ('wilhelm.tel', 550.80, 'ab 1.6.2026');
+
+insert into fixcosts (type, yearly_costs, comment)
+values ('Strom (ehemals Gas)', 888.00,'Ich setze das gesparte Gas nun erst einmal als Strom an');
+
+select * from fixcosts;
+
+delete from fixcosts where id = '81dcdc64-1020-46b1-9ab7-97f712c56c73';

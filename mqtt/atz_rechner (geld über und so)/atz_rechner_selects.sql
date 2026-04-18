@@ -1,0 +1,1 @@
+select * from assets_and_costs_and_montly_average_atz;

@@ -1,6 +1,6 @@
 Select * from fixcosts order by type;
 
-select sum(yearly_costs) / 12 as monatlich, sum(yearly_costs) as jährlich from fixcosts_current_view;
+select sum(yearly_costs) / 12 as monatlich, sum(yearly_costs) as jährlich from fixcosts_view;
 
 select now() AT TIME ZONE 'CET';
 
