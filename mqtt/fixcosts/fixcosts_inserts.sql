@@ -17,7 +17,7 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Google Cloud Speicher 100 GB', 19.99,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Grundsteuer', 561.60,null);
+values ('Grundsteuer', 532.80,'final festgesetzte Grundateuer vom 28.04.2026');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Haftpflicht', 64.69,null);
@@ -44,7 +44,7 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Rundfunk', 215.76,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Schornsteinfeger Feuerstättenschau', 62.48,null);
+values ('Schornsteinfeger Feuerstättenschau', 0.0,'Mit Wärmepumpe keine Kosten mehr');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Spotify', 90.00,null);
