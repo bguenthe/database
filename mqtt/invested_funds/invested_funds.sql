@@ -1,0 +1,1 @@
+select * from invested_funds;
