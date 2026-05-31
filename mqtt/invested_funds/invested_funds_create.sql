@@ -2,12 +2,12 @@ CREATE TYPE type AS ENUM ('Aktien', 'Aktien Anlagekonto', 'Tagesgeld', 'Girokont
 
 create table invested_funds
 (
-    id            uuid                     default gen_random_uuid() not null,
-    creation_time timestamp with time zone default now()             not null,
-    name          text                                               not null,
-    type          type                                               not null,
-    account       text                                               not null,
-    amount        double precision                                   not null,
+    id            uuid      default gen_random_uuid() not null,
+    creation_time timestamp default now()             not null,
+    name          text                                not null,
+    type          type                                not null,
+    account       text                                not null,
+    amount        double precision                    not null,
     interest_rate double precision,
     comment       text
 );

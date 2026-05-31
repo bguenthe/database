@@ -1,1 +1,1 @@
-select * from invested_funds;
+select sum(amount) from invested_funds_view;

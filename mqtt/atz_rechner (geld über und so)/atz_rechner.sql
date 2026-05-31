@@ -41,7 +41,7 @@ with atz_rente
                      from costs_view
                      where lower(comment) like '%kippen%'),
      monatliches_extrageld_bis_ich_85_bin
-         as (select 203523.24 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
+         as (select (select sum(amount) from invested_funds_view) / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
                               extract(MONTH from age('2045-09-01'::DATE, now()::DATE))) monatliches_extrageld_bis_ich_85_bin)
 select now(),
        monate,
@@ -75,3 +75,12 @@ from min_max,
      monate_tage_kippen,
      kippencosts,
      monatliches_extrageld_bis_ich_85_bin;
+
+select 203523.24 / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
+                    extract(MONTH from age('2045-09-01'::DATE, now()::DATE)))
+
+select (select sum(amount) from invested_funds_view) / (extract(YEAR from age('2045-09-01'::DATE, now()::DATE)) * 12 +
+                    extract(MONTH from age('2045-09-01'::DATE, now()::DATE)))
+
+
+select sum(amount) from invested_funds_view
