@@ -11,7 +11,7 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Congstar', 144.00,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Gas', 888.00,null);
+values ('Gas', 0.00,null);
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Google Cloud Speicher 100 GB', 19.99,null);
@@ -20,13 +20,16 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Grundsteuer', 532.80,'final festgesetzte Grundateuer vom 28.04.2026');
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Haftpflicht', 64.69,null);
+values ('HUK Privathaftpflichtversicherung', 64.69,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Hausrat', 172.70,null);
+values ('HUK Hausratversicherung', 172.70,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Heizungswartung', 150.00,null);
+values ('HUK Wohngebäudeversicherung', 370.63,'Vergessen, Dreck!');
+
+insert into fixcosts (type, yearly_costs, comment)
+values ('Heizungswartung', 0.00,'Keine Heizungswartung mehr für Wärmepumpe');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('KFZ Steuer', 80.00,null);
@@ -50,10 +53,10 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Spotify', 90.00,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Strom', 364.08,null);
+values ('Strom', 364.08+888.0,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Strom Solar Einspeisevergütung', -492.00,null);
+values ('Strom Solar Einspeisevergütung', -492.00,'Neuer Wert, alter Wert war 47 €');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Strom Wallbox', 204.00,null);
@@ -62,17 +65,7 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Wasser/Abwasser', 156.00,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Wohngebäude', 357.01,null);
+values ('wilhelm.tel', 550.80, 'neu ab 1.6.2026');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('WWF', 50.00,null);
-
-insert into fixcosts (type, yearly_costs, comment)
-values ('wilhelm.tel', 550.80, 'ab 1.6.2026');
-
-insert into fixcosts (type, yearly_costs, comment)
-values ('Strom (ehemals Gas)', 888.00,'Ich setze das gesparte Gas nun erst einmal als Strom an');
-
-select * from fixcosts;
-
-delete from fixcosts where id = '81dcdc64-1020-46b1-9ab7-97f712c56c73';
