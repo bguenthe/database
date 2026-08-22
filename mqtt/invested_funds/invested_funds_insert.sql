@@ -266,3 +266,82 @@ insert into invested_funds (creation_time, name, type, account, amount, interest
 values (to_date('01.08.2026', 'DD.MM.YYYY'), 'Traders Place Anlagekonto', 'Aktien Anlagekonto',
         'DE67 7003 3100 5333 7320 05',
         256.31, null, null);
+
+-- 06.08.2026  -- Ausgleichszahlung von OTTO erhalten
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Postbank Giro direkt', 'Girokonto', 'DE95 2001 0020 0305 3612 01',
+        15708.08, null, '');
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Postbank Giro extra plus', 'Girokonto', 'DE63 2307 0224 0446 6439 02',
+        5053.51, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Postbank Wertpapierdepot', 'Aktien', '203 4664579 00',
+        2489.50, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Postbank Wertpapierdepot Anlagekonto', 'Aktien Anlagekonto',
+        'DE09 2307 0224 0466 4579 00',
+        442.10, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Otto Genussrecht', 'Otto Genussrecht', '',
+        3251.70, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Ayvens Bank', 'Tagesgeld', 'NL18LPLN2801354686',
+        60377.82, 2.8, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Volkswagen Bank', 'Tagesgeld', 'DE26 2702 0000 1531 3669 85',
+        101433.24, 2.9, 'Befristet bis 03.06.2026');
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Traders Place', 'Aktien', 'DE09 2307 0224 0466 4579 00',
+        28073.50, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('06.08.2026', 'DD.MM.YYYY'), 'Traders Place Anlagekonto', 'Aktien Anlagekonto',
+        'DE67 7003 3100 5333 7320 05',
+        256.31, null, null);
+
+
+--   -- Ausgleichszahlung von OTTO erhalten
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Postbank Giro direkt', 'Girokonto', 'DE95 2001 0020 0305 3612 01',
+        10833.39, null, '');
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Postbank Giro extra plus', 'Girokonto', 'DE63 2307 0224 0446 6439 02',
+        5053.51, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Postbank Wertpapierdepot', 'Aktien', '203 4664579 00',
+        2441.00, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Postbank Wertpapierdepot Anlagekonto', 'Aktien Anlagekonto',
+        'DE09 2307 0224 0466 4579 00',
+        442.10, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Otto Genussrecht', 'Otto Genussrecht', '',
+        3251.70, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Ayvens Bank', 'Tagesgeld', 'NL18LPLN2801354686',
+        60377.82, 2.8, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Volkswagen Bank', 'Tagesgeld', 'DE26 2702 0000 1531 3669 85',
+        101434.11, 2.9, 'Befristet bis 03.06.2026');
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Traders Place', 'Aktien', 'DE09 2307 0224 0466 4579 00',
+        27631.31, null, null);
+
+insert into invested_funds (creation_time, name, type, account, amount, interest_rate, comment)
+values (to_date('22.08.2026', 'DD.MM.YYYY'), 'Traders Place Anlagekonto', 'Aktien Anlagekonto',
+        'DE67 7003 3100 5333 7320 05',
+        256.31, null, null);
