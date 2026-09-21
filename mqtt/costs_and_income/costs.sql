@@ -1,21 +1,14 @@
 select * from mqtt.public.costs_view
 where 1=1
-and comment like '%Kippen%';
+and lower(comment) like '%kippen%';
 
-select * from mqtt.public.income_view
+select sum(costs) from mqtt.public.costs_view
 where 1=1
---and comment like '%Kippen%';
-order by recorddatetime desc;
+  and lower(comment) like '%kippen%';
 
-select * from mqtt_logger where topic = 'expanses/clientcosts';
-
-select * from mqtt_logger where topic = 'expanses/clientincome';
-
-select count(*) from mqtt_logger where topic = 'expanses/clientcosts';
-select count(*) from mqtt_logger_save_2026 where topic = 'expanses/clientcosts';
-
-select count(*) from mqtt_logger where topic = 'expanses/clientincome';
-
-select count(*) from mqtt_logger_save_2026 where topic = 'expanses/clientincome';
-
-delete from mqtt_logger where id = 1187;
+/* Urlaubskosten
+select * from mqtt.public.costs_view
+where 1=1
+and to_date(recordDateTime, 'YYYY-MM-DD') >= to_date('2026-09-08', 'YYYY-MM-DD')
+--and to_date(recordDateTime, 'YYYY-MM-DD') <= to_date('2026-09-25', 'YYYY-MM-DD')
+order by costs_view.recorddatetime desc;
