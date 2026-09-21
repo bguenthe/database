@@ -1,1 +1,0 @@
-select sum(amount) from invested_funds_view;
