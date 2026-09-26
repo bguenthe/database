@@ -18,7 +18,7 @@ where 1 = 1
 -- and payload::json ->> 'comment' like '%oral%'
 --and  upper(payload::json->>'type') = 'SONST'
 --and payload::json ->> 'costs' = '9'
-order by recordDateTime desc
+order by recordDateTime desc;
 --and to_date(payload::json ->> 'recordDateTime', 'YYYY-MM-DD') = to_date('2025-12-23', 'YYYY-MM-DD')
 --order by to_number(payload::json ->> 'costs', '9999999.99') desc
 
