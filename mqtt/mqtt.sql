@@ -28,8 +28,15 @@ select sum(costs) from costs_view;
 
 select count(*)
 from mqtt_logger
-where topic = 'expanses/clientincome'
-;
+where topic = 'expanses/clientincome';
+
+select count(*)
+from mqtt_logger
+where topic = 'expanses/clientcosts';
+
+create table mqtt_logger_save_2026_09_28 as select * from mqtt_logger;
+
+delete from mqtt_logger;
 
 /* Kippen */
 
