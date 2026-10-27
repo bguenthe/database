@@ -17,4 +17,3 @@ comment on column fixcosts.comment is 'Kommentare zu den Kosten';
 
 alter table fixcosts
     owner to postgres;
-
