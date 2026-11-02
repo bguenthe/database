@@ -8,28 +8,19 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('Amazon Prime', 89.90,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Congstar', 144.00,null);
-
-insert into fixcosts (type, yearly_costs, comment)
-values ('Gas', 0.00,null);
-
-insert into fixcosts (type, yearly_costs, comment)
 values ('Google Cloud Speicher 100 GB', 19.99,null);
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Grundsteuer', 532.80,'final festgesetzte Grundateuer vom 28.04.2026');
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('HUK Privathaftpflichtversicherung', 64.69,null);
-
-insert into fixcosts (type, yearly_costs, comment)
 values ('HUK Hausratversicherung', 172.70,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('HUK Wohngebäudeversicherung', 370.63,'Vergessen, Dreck!');
+values ('HUK Privathaftpflichtversicherung', 64.69,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Heizungswartung', 0.00,'Keine Heizungswartung mehr für Wärmepumpe');
+values ('HUK Wohngebäudeversicherung', 370.63,null);
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('KFZ Steuer', 80.00,null);
@@ -41,13 +32,10 @@ insert into fixcosts (type, yearly_costs, comment)
 values ('MusikStar', 60.00,null);
 
 insert into fixcosts (type, yearly_costs, comment)
-values ('Netflix', 239.88,null);
+values ('Netflix', 263.88,'4K Abo');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Rundfunk', 215.76,null);
-
-insert into fixcosts (type, yearly_costs, comment)
-values ('Schornsteinfeger Feuerstättenschau', 0.0,'Mit Wärmepumpe keine Kosten mehr');
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Spotify', 90.00,null);
@@ -60,6 +48,9 @@ values ('Strom Solar Einspeisevergütung', -492.00,'Neuer Wert, alter Wert war 4
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Strom Wallbox', 204.00,null);
+
+insert into fixcosts (type, yearly_costs, comment)
+values ('Telekom MagentaMobil Prepaid Jahrestarif', 99.95,null);
 
 insert into fixcosts (type, yearly_costs, comment)
 values ('Wasser/Abwasser', 156.00,null);

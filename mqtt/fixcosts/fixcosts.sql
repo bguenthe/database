@@ -1,7 +1,7 @@
 Select * from fixcosts_view order by type;
 Select * from fixcosts order by type;
 
-delete from fixcosts;
+delete from fixcosts where 1=1;
 
 select sum(yearly_costs) / 12 as monatlich, sum(yearly_costs) as jährlich from fixcosts_view;
 
