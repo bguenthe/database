@@ -55,7 +55,7 @@
       </schema-mapping>
     </data-source>
     <data-source name="mqtt@proxmox (via tailscale)" uuid="d169b2c9-4fe1-4c8f-a9d9-cc528a761938">
-      <database-info product="PostgreSQL" version="18.2 (Debian 18.2-1.pgdg13+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="18.2" exact-driver-version="42.7">
+      <database-info product="PostgreSQL" version="18.2 (Debian 18.2-1.pgdg13+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.13" dbms="POSTGRES" exact-version="18.2" exact-driver-version="42.7">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
