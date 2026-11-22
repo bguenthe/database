@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/mqtt/atz_rechner (geld über und so)/atz_rechner.sql" value="d169b2c9-4fe1-4c8f-a9d9-cc528a761938" />
-    <file url="file://$PROJECT_DIR$/mqtt/atz_rechner (geld über und so)/atz_rechner_selects.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
+    <file url="file://$PROJECT_DIR$/mqtt/atz_rechner (geld über und so)/atz_rechner_selects.sql" value="d169b2c9-4fe1-4c8f-a9d9-cc528a761938" />
     <file url="file://$PROJECT_DIR$/mqtt/costs_and_income/average_costs.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
     <file url="file://$PROJECT_DIR$/mqtt/costs_and_income/costs.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
     <file url="file://$PROJECT_DIR$/mqtt/costs_and_income/costs_and_income_views.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
@@ -18,6 +18,5 @@
     <file url="file://$PROJECT_DIR$/mqtt/invested_funds/invested_funds_views.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
     <file url="file://$PROJECT_DIR$/mqtt/mqtt.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
     <file url="file://$PROJECT_DIR$/mqtt/mqtt_costs and income analyse.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/0b9bc4e7-407f-4d22-82f1-9c60ee86e041/console_1.sql" value="0b9bc4e7-407f-4d22-82f1-9c60ee86e041" />
   </component>
 </project>

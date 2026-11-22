@@ -1,5 +1,5 @@
 /* Durchschnittliche, monatliche Ausgaben
-   SOLLTE AM Besten am Monatsanfang ausgeührt werden (wegen Monatsabrundung)
+   SOLLTE AM besten am Monatsanfang ausgeführt werden (wegen Monatsabrundung)
    */
 create table assets_and_costs_and_montly_average_atz as (;
 insert into assets_and_costs_and_montly_average_atz
@@ -84,3 +84,6 @@ select (select sum(amount) from invested_funds_view) / (extract(YEAR from age('2
 
 
 select sum(amount) from invested_funds_view
+
+select (select sum(amount) from invested_funds_view) / (extract(YEAR from age('2049-09-01'::DATE, now()::DATE)) * 12 +
+                                                        extract(MONTH from age('2049-09-01'::DATE, now()::DATE))) monatliches_extrageld_bis_ich_85_bin;
